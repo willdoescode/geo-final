@@ -36,6 +36,10 @@ createCylinderWithVolumeAndRadius volume radius =
 data Cube = Cube Square Square Square Square Square Square
   deriving (Show, Eq)
 
+-- base and height
+data Cone = Cone Circle Float
+  deriving (Show, Eq)
+
 class Shape a where
   area :: a -> Float
   perimeter :: a -> Float
@@ -80,6 +84,13 @@ instance Shape3d Cube where
 
 instance Shape3d Cylinder where
   volume (Cylinder (Circle _ r) h) = pi * r ^ 2 * h
+
+instance Shape Cone where
+  area (Cone (Circle _ r) h) = pi * r * (r + sqrt (h ^ 2 + r ^ 2))
+  perimeter (Cone (Circle _ r) h) = 2 * pi * r * (r + sqrt (h ^ 2 + r ^ 2))
+
+instance Shape3d Cone where
+  volume (Cone (Circle _ r) h) = (1 / 3) * pi * r ^ 2 * h
 
 triangleHeight :: Triangle -> Float
 triangleHeight t@(Triangle s1 _ _) = area t / (lengthOfLineSegment s1 * 0.5)
