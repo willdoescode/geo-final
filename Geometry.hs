@@ -10,23 +10,19 @@ distanceBetweenPoints (x1, y1) (x2, y2) = sqrt ((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
 lengthOfLineSegment :: LineSegment -> Float
 lengthOfLineSegment = uncurry distanceBetweenPoints
 
--- A point and a slope
-data Line = Line Point (Float, Float)
+data Line = Line Point (Float, Float) -- Point, Slope
   deriving (Show, Eq)
 
--- Center and Radius
-data Circle = Circle Point Float
+data Circle = Circle Point Float -- Center, Radius
   deriving (Show, Eq)
 
--- a b c
-data Triangle = Triangle LineSegment LineSegment LineSegment
+data Triangle = Triangle LineSegment LineSegment LineSegment -- a, b, c
   deriving (Show, Eq)
 
 data Square = Square LineSegment LineSegment LineSegment LineSegment
   deriving (Show, Eq)
 
--- Circle and Height
-data Cylinder = Cylinder Circle Float
+data Cylinder = Cylinder Circle Float -- Circle, Height
   deriving (Show, Eq)
 
 createCylinderWithVolumeAndRadius :: Float -> Float -> Cylinder
@@ -36,8 +32,7 @@ createCylinderWithVolumeAndRadius volume radius =
 data Cube = Cube Square Square Square Square Square Square
   deriving (Show, Eq)
 
--- base and height
-data Cone = Cone Circle Float
+data Cone = Cone Circle Float -- Base, Height
   deriving (Show, Eq)
 
 class Shape a where
