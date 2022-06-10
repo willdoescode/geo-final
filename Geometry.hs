@@ -175,23 +175,36 @@ instance Shape3d Tetrahedron where
     )
       / (6 * sqrt 2)
 
-distanceBetweenPoints :: Point -> Point -> Float
+distanceBetweenPoints ::
+  Point ->
+  Point ->
+  Float
 distanceBetweenPoints (x1, y1) (x2, y2) =
   sqrt ((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
 
-lengthOfLineSegment :: LineSegment -> Float
+lengthOfLineSegment ::
+  LineSegment ->
+  Float
 lengthOfLineSegment (Points (p1, p2)) =
   distanceBetweenPoints p1 p2
 lengthOfLineSegment (Length l) = l
 
-createCylinderWithVolumeAndRadius :: Float -> Float -> Cylinder
+createCylinderWithVolumeAndRadius ::
+  Float -> -- Volume
+  Float -> -- Radius
+  Cylinder
 createCylinderWithVolumeAndRadius volume radius =
   Cylinder (Circle (0, 0) radius) (volume / (pi * radius ^ 2))
 
-triangleSides :: Triangle -> [LineSegment]
+triangleSides ::
+  Triangle ->
+  [LineSegment]
 triangleSides (Triangle s1 _ _) = [s1]
 
-constructRightTriangleWithoutHype :: LineSegment -> LineSegment -> Triangle
+constructRightTriangleWithoutHype ::
+  LineSegment -> -- Side a
+  LineSegment -> -- Side b
+  Triangle
 constructRightTriangleWithoutHype s1 s2 =
   Triangle
     s1
