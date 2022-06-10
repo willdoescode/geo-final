@@ -190,3 +190,16 @@ createCylinderWithVolumeAndRadius volume radius =
 
 triangleSides :: Triangle -> [LineSegment]
 triangleSides (Triangle s1 _ _) = [s1]
+
+constructRightTriangleWithoutHype :: LineSegment -> LineSegment -> Triangle
+constructRightTriangleWithoutHype s1 s2 =
+  Triangle
+    s1
+    s2
+    ( Length
+        ( sqrt
+            ( lengthOfLineSegment s1 ^ 2
+                + lengthOfLineSegment s2 ^ 2
+            )
+        )
+    )
