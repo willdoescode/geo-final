@@ -127,6 +127,23 @@ instance Shape3d Cone where
   volume (Cone (Circle _ r) h) =
     (1 / 3) * pi * r ^ 2 * h
 
+data Sphere
+  = Sphere
+      Circle -- Circle
+      Float -- Radius
+  deriving (Show, Eq)
+
+instance Shape Sphere where
+  area (Sphere (Circle _ r) _) =
+    4 * pi * r ^ 2
+
+  perimeter (Sphere (Circle _ r) _) =
+    2 * pi * r
+
+instance Shape3d Sphere where
+  volume (Sphere (Circle _ r) _) =
+    (4 / 3) * pi * r ^ 3
+
 triangleHeight :: Triangle -> Float
 triangleHeight t@(Triangle s1 _ _) =
   area t / (lengthOfLineSegment s1 * 0.5)
