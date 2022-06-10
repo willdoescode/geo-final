@@ -1,4 +1,24 @@
-module Geometry where
+module Geometry
+  ( Shape (..),
+    Shape3d (..),
+    Point (..),
+    LineSegment (..),
+    Line (..),
+    Circle (..),
+    Triangle (..),
+    Square (..),
+    Cylinder (..),
+    Cube (..),
+    Cone (..),
+    Sphere (..),
+    Tetrahedron (..),
+    distanceBetweenPoints,
+    lengthOfLineSegment,
+    createCylinderWithVolumeAndRadius,
+    triangleSides,
+    constructRightTriangleWithoutHype,
+  )
+where
 
 class Shape a where
   area :: a -> Float
