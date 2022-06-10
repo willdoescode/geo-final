@@ -72,7 +72,10 @@ instance Shape Square where
       0
       [l1, l2, l3, l4]
 
-data Cylinder = Cylinder Circle Float -- Circle, Height
+data Cylinder
+  = Cylinder
+      Circle -- Circle
+      Float -- Height
   deriving (Show, Eq)
 
 instance Shape Cylinder where
@@ -108,7 +111,10 @@ instance Shape3d Cube where
   volume (Cube (Square s1 _ _ _) _ _ _ _ _) =
     lengthOfLineSegment s1 ^ 3
 
-data Cone = Cone Circle Float -- Base, Height
+data Cone
+  = Cone
+      Circle -- Base
+      Float -- Height
   deriving (Show, Eq)
 
 instance Shape Cone where
