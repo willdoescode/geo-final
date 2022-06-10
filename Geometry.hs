@@ -144,9 +144,36 @@ instance Shape3d Sphere where
   volume (Sphere (Circle _ r) _) =
     (4 / 3) * pi * r ^ 3
 
-triangleHeight :: Triangle -> Float
-triangleHeight t@(Triangle s1 _ _) =
-  area t / (lengthOfLineSegment s1 * 0.5)
+data Tetrahedron
+  = Tetrahedron
+      Triangle -- Base
+      Triangle -- Top
+      Triangle -- Side
+      Triangle -- Side
+  deriving (Show, Eq)
+
+instance Shape Tetrahedron where
+  area (Tetrahedron t1 t2 t3 t4) =
+    foldr
+      ((+) . area)
+      0
+      [t1, t2, t3, t4]
+
+  perimeter (Tetrahedron t1 t2 t3 t4) =
+    foldr
+      ( (+) . perimeter
+      )
+      0
+      [t1, t2, t3, t4]
+
+instance Shape3d Tetrahedron where
+  volume (Tetrahedron t1 _ _ _) =
+    -- a ^ 3 / 6 * sqrt(2)
+    ( lengthOfLineSegment
+        (head (triangleSides t1))
+        ^ 3
+    )
+      / (6 * sqrt 2)
 
 distanceBetweenPoints :: Point -> Point -> Float
 distanceBetweenPoints (x1, y1) (x2, y2) =
@@ -160,3 +187,6 @@ lengthOfLineSegment (Length l) = l
 createCylinderWithVolumeAndRadius :: Float -> Float -> Cylinder
 createCylinderWithVolumeAndRadius volume radius =
   Cylinder (Circle (0, 0) radius) (volume / (pi * radius ^ 2))
+
+triangleSides :: Triangle -> [LineSegment]
+triangleSides (Triangle s1 _ _) = [s1]
