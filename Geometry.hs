@@ -251,7 +251,14 @@ isTriangleRight (Triangle s1 s2 s3) =
     == (sides !! 2)
   where
     -- sort sides to get hypotenuse just in case out of order
-    sides = sort (map ((^ 2) . lengthOfLineSegment) [s1, s2, s3])
+    sides =
+      sort
+        ( map
+            ( (^ 2)
+                . lengthOfLineSegment
+            )
+            [s1, s2, s3]
+        )
 
 findAnglesOfTriangle' ::
   Float -> -- a
