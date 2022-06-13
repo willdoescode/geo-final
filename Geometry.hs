@@ -17,8 +17,12 @@ module Geometry
     createCylinderWithVolumeAndRadius,
     triangleSides,
     constructRightTriangleWithoutHype,
+    isTriangleRight,
+    findAnglesOfTriangle,
   )
 where
+
+import Data.List
 
 class Shape a where
   area :: a -> Float
@@ -203,8 +207,8 @@ distanceBetweenPoints (x1, y1) (x2, y2) =
   sqrt ((x2 - x1) ^ 2 + (y2 - y1) ^ 2)
 
 lengthOfLineSegment ::
-  LineSegment ->
-  Float
+  LineSegment -> -- Line
+  Float -- Length
 lengthOfLineSegment (Points (p1, p2)) =
   distanceBetweenPoints p1 p2
 lengthOfLineSegment (Length l) = l
@@ -214,7 +218,9 @@ createCylinderWithVolumeAndRadius ::
   Float -> -- Radius
   Cylinder
 createCylinderWithVolumeAndRadius volume radius =
-  Cylinder (Circle (0, 0) radius) (volume / (pi * radius ^ 2))
+  Cylinder
+    (Circle (0, 0) radius)
+    (volume / (pi * radius ^ 2))
 
 triangleSides ::
   Triangle ->
@@ -236,3 +242,38 @@ constructRightTriangleWithoutHype s1 s2 =
             )
         )
     )
+
+isTriangleRight ::
+  Triangle ->
+  Bool
+isTriangleRight (Triangle s1 s2 s3) =
+  sqrt (head sides + (sides !! 1))
+    == (sides !! 2)
+  where
+    -- sort sides to get hypotenuse just in case out of order
+    sides = sort (map ((^ 2) . lengthOfLineSegment) [s1, s2, s3])
+
+findAnglesOfTriangle' ::
+  Float -> -- a
+  Float -> -- b
+  Float -> -- c
+  Float -- Angle
+findAnglesOfTriangle' a b c =
+  acos
+    ( (b ^ 2 + c ^ 2 - a ^ 2)
+        / (2 * b * c)
+    )
+
+findAnglesOfTriangle ::
+  Triangle ->
+  ( Float, -- Angle a
+    Float, -- Angle b
+    Float -- Angle c
+  )
+findAnglesOfTriangle (Triangle s1 s2 s3) =
+  ( findAnglesOfTriangle' a b c,
+    findAnglesOfTriangle' b c a,
+    findAnglesOfTriangle' c a b
+  )
+  where
+    [a, b, c] = map lengthOfLineSegment [s1, s2, s3]
