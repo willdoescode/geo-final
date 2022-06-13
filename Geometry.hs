@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+
+{-# HLINT ignore "Use newtype instead of data" #-}
 module Geometry
   ( Shape (..),
     Shape3d (..),
@@ -28,8 +31,9 @@ import Data.List
 class Shape a where
   area :: a -> Float
   perimeter :: a -> Float
+  name :: a -> String
 
-class Shape3d a where
+class Shape a => Shape3d a where
   volume :: a -> Float
 
 type Point = (Float, Float)
@@ -55,6 +59,7 @@ data Circle
 instance Shape Circle where
   area (Circle _ r) = pi * (r ^ 2)
   perimeter (Circle _ r) = 2 * pi * r
+  name _ = "circle"
 
 data Triangle
   = Triangle
@@ -79,6 +84,8 @@ instance Shape Triangle where
   perimeter (Triangle l1 l2 l3) =
     foldr ((+) . lengthOfLineSegment) 0 [l1, l2, l3]
 
+  name _ = "Triangle"
+
 data Square
   = Square
       LineSegment
@@ -90,12 +97,15 @@ data Square
 instance Shape Square where
   area (Square l1 l2 _ _) =
     lengthOfLineSegment l1 * lengthOfLineSegment l2
+
   perimeter (Square l1 l2 l3 l4) =
     foldr
       ( (+) . lengthOfLineSegment
       )
       0
       [l1, l2, l3, l4]
+
+  name _ = "Square"
 
 data Cylinder
   = Cylinder
@@ -106,8 +116,11 @@ data Cylinder
 instance Shape Cylinder where
   area (Cylinder (Circle _ r) h) =
     2 * pi * r * h + 2 * pi * r ^ 2
+
   perimeter (Cylinder (Circle _ r) h) =
     2 * pi * r * h
+
+  name _ = "Cylinder"
 
 instance Shape3d Cylinder where
   volume (Cylinder (Circle _ r) h) =
@@ -129,8 +142,11 @@ instance Shape Cube where
       ((+) . area)
       0
       [s1, s2, s3, s4, s5, s6]
+
   perimeter (Cube (Square s1 _ _ _) _ _ _ _ _) =
     12 * lengthOfLineSegment s1
+
+  name _ = "Cube"
 
 instance Shape3d Cube where
   volume (Cube (Square s1 _ _ _) _ _ _ _ _) =
@@ -145,8 +161,11 @@ data Cone
 instance Shape Cone where
   area (Cone (Circle _ r) h) =
     pi * r * (r + sqrt (h ^ 2 + r ^ 2))
+
   perimeter (Cone (Circle _ r) h) =
     2 * pi * r * (r + sqrt (h ^ 2 + r ^ 2))
+
+  name _ = "Cone"
 
 instance Shape3d Cone where
   volume (Cone (Circle _ r) h) =
@@ -155,18 +174,19 @@ instance Shape3d Cone where
 data Sphere
   = Sphere
       Circle -- Circle
-      Float -- Radius
   deriving (Show, Eq)
 
 instance Shape Sphere where
-  area (Sphere (Circle _ r) _) =
+  area (Sphere (Circle _ r)) =
     4 * pi * r ^ 2
 
-  perimeter (Sphere (Circle _ r) _) =
+  perimeter (Sphere (Circle _ r)) =
     2 * pi * r
 
+  name _ = "Sphere"
+
 instance Shape3d Sphere where
-  volume (Sphere (Circle _ r) _) =
+  volume (Sphere (Circle _ r)) =
     (4 / 3) * pi * r ^ 3
 
 data Tetrahedron
@@ -178,11 +198,17 @@ data Tetrahedron
   deriving (Show, Eq)
 
 instance Shape Tetrahedron where
-  area (Tetrahedron t1 t2 t3 t4) =
-    foldr
-      ((+) . area)
-      0
-      [t1, t2, t3, t4]
+  area (Tetrahedron t1 _ _ _) =
+    3
+      * ( sqrt 3
+            * ( ( lengthOfLineSegment
+                    ( head (triangleSides t1)
+                    )
+                    ^ 2
+                )
+                  / 2
+              )
+        )
 
   perimeter (Tetrahedron t1 t2 t3 t4) =
     foldr
@@ -191,14 +217,18 @@ instance Shape Tetrahedron where
       0
       [t1, t2, t3, t4]
 
+  name _ = "Tetrahedron"
+
 instance Shape3d Tetrahedron where
   volume (Tetrahedron t1 _ _ _) =
-    -- a ^ 3 / 6 * sqrt(2)
-    ( lengthOfLineSegment
-        (head (triangleSides t1))
-        ^ 3
-    )
-      / (6 * sqrt 2)
+    -- sqrt 3 * (h^3 / 8)
+    sqrt 3
+      * ( ( lengthOfLineSegment
+              (head (triangleSides t1))
+              ^ 3
+          )
+            / 8
+        )
 
 distanceBetweenPoints ::
   Point ->
