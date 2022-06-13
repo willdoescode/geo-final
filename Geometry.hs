@@ -1,6 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-
-{-# HLINT ignore "Use newtype instead of data" #-}
 module Geometry
   ( Shape (..),
     Shape3d (..),
@@ -171,7 +168,7 @@ instance Shape3d Cone where
   volume (Cone (Circle _ r) h) =
     (1 / 3) * pi * r ^ 2 * h
 
-data Sphere
+newtype Sphere
   = Sphere
       Circle -- Circle
   deriving (Show, Eq)
