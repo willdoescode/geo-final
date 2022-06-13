@@ -19,6 +19,7 @@ module Geometry
     constructRightTriangleWithoutHype,
     isTriangleRight,
     findAnglesOfTriangle,
+    centerOfCircle,
   )
 where
 
@@ -247,18 +248,21 @@ isTriangleRight ::
   Triangle ->
   Bool
 isTriangleRight (Triangle s1 s2 s3) =
-  sqrt (head sides + (sides !! 1))
+  sqrt (head sides ^ 2 + (sides !! 1) ^ 2)
     == (sides !! 2)
   where
     -- sort sides to get hypotenuse just in case out of order
     sides =
       sort
         ( map
-            ( (^ 2)
-                . lengthOfLineSegment
-            )
+            lengthOfLineSegment
             [s1, s2, s3]
         )
+
+radiansToDegrees ::
+  Float -> -- Radians
+  Float -- Degrees
+radiansToDegrees = (/ pi) . (* 180)
 
 findAnglesOfTriangle' ::
   Float -> -- a
@@ -266,9 +270,11 @@ findAnglesOfTriangle' ::
   Float -> -- c
   Float -- Angle
 findAnglesOfTriangle' a b c =
-  acos
-    ( (b ^ 2 + c ^ 2 - a ^ 2)
-        / (2 * b * c)
+  radiansToDegrees
+    ( acos
+        ( ((b ^ 2) + (c ^ 2) - (a ^ 2))
+            / (2 * b * c)
+        )
     )
 
 findAnglesOfTriangle ::
@@ -283,4 +289,11 @@ findAnglesOfTriangle (Triangle s1 s2 s3) =
     findAnglesOfTriangle' c a b
   )
   where
-    [a, b, c] = map lengthOfLineSegment [s1, s2, s3]
+    [a, b, c] =
+      map lengthOfLineSegment [s1, s2, s3]
+
+centerOfCircle ::
+  Circle ->
+  Point
+centerOfCircle (Circle p _) =
+  p
